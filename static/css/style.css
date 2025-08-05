@@ -1,0 +1,78 @@
+body {
+    background-color: #f8f9fa;
+}
+
+.card {
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    border: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+.card-header {
+    background-color: #fff;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+.table th {
+    font-weight: 600;
+    background-color: #f8f9fa;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.btn-action {
+    margin-right: 5px;
+}
+
+.leave-badge {
+    background-color: #6c757d;
+}
+
+.work-badge {
+    background-color: #28a745;
+}
+
+.overtime-highlight {
+    color: #dc3545;
+    font-weight: bold;
+}
+
+.display-4 {
+    font-size: 2.5rem;
+}
+
+.toast {
+    z-index: 1050;
+}
+
+/* 统一徽章样式 */
+.badge {
+    font-size: 0.75em;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .display-4 {
+        font-size: 1.8rem;
+    }
+    
+    .table-responsive {
+        font-size: 0.9rem;
+    }
+    
+    .card-body {
+        padding: 1rem;
+    }
+    
+    .btn-sm {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.875rem;
+    }
+}
+
+/* 确保表格在小屏幕上也能正常显示 */
+.table-responsive {
+    min-height: 0.01%;
+    overflow-x: auto;
+}

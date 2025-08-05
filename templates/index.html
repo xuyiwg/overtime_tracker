@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>加班时长统计</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container mt-4">
+        
+        <!-- 数据录入表单 -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5><i class="fas fa-plus-circle"></i> 添加工作记录</h5>
+            </div>
+            <div class="card-body">
+                <form id="recordForm">
+                    <input type="hidden" id="is_edit_mode" value="false">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label for="date" class="form-label">日期</label>
+                            <input type="date" class="form-control" id="date" required>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="clock_out" class="form-label">下班时间</label>
+                            <input type="time" class="form-control" id="clock_out" value="17:00">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="is_leave" class="form-label">是否请假</label>
+                            <select class="form-select" id="is_leave">
+                                <option value="false">否</option>
+                                <option value="true">是</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2 d-flex align-items-end">
+                            <div class="btn-group" role="group">
+                                <button type="button" class="btn btn-outline-secondary" id="cancelBtn" style="display: none;">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                                <button type="submit" class="btn btn-primary" id="submitBtn">
+                                    <i class="fas fa-save"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- 统计信息 -->
+        <div class="row mb-4" id="statistics">
+            <div class="col-md-4">
+                <div class="card text-white bg-primary">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="fas fa-calendar-alt"></i> 本月已工作</h5>
+                        <p class="card-text display-4" id="workDays">0</p>
+                        <small>天</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-white bg-success">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="fas fa-clock"></i> 总加班时长</h5>
+                        <p class="card-text display-4" id="totalOvertime">0</p>
+                        <small>小时</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-white bg-info">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="fas fa-chart-line"></i> 平均加班</h5>
+                        <p class="card-text display-4" id="averageOvertime">0</p>
+                        <small>小时/天</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 目标进度卡片 -->
+        <div class="row mb-4" id="targetProgress" style="display: none;">
+            <div class="col-md-12">
+                <div class="card border-warning">
+                    <div class="card-header bg-warning text-white">
+                        <h5 class="mb-0"><i class="fas fa-bullseye"></i> 月度目标进度</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-3 mb-3">
+                                <div class="text-center">
+                                    <h6>剩余工作日</h6>
+                                    <p class="display-6 text-warning" id="remainingWorkdays">0</p>
+                                    <small>天</small>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <div class="text-center">
+                                    <h6>还需加班</h6>
+                                    <p class="display-6 text-warning" id="additionalOvertimeNeeded">0</p>
+                                    <small>小时</small>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <div class="text-center">
+                                    <h6>日均需加班</h6>
+                                    <p class="display-6 text-warning" id="dailyAverageNeeded">0</p>
+                                    <small>小时/天</small>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <div class="text-center">
+                                    <h6>目标平均</h6>
+                                    <p class="display-6 text-warning" id="targetAverage">1.5</p>
+                                    <small>小时/天</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="progress mt-3">
+                            <div class="progress-bar bg-warning" role="progressbar" id="progressBar" style="width: 0%">
+                                <span id="progressText">0%</span>
+                            </div>
+                        </div>
+                        <div class="mt-2 text-center">
+                            <small id="progressDescription">按当前进度，需要在剩余工作日每天平均加班 <strong id="dailyNeededText">0</strong> 小时才能达到目标</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 历史月份统计 -->
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5><i class="fas fa-history"></i> 历史月份统计</h5>
+                <div class="small" id="history_count_display">共 0 个月份</div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover" id="historyTable">
+                        <thead>
+                            <tr>
+                                <th>年月</th>
+                                <th>工作日</th>
+                                <th>总加班时长</th>
+                                <th>平均加班时长</th>
+                                <th>目标达成</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historyBody">
+                            <!-- 历史记录将通过JavaScript动态加载 -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- 记录列表 -->
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5><i class="fas fa-list"></i> 工作记录列表</h5>
+                <div class="small" id="record_count_display">共 0 条记录</div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover" id="recordsTable">
+                        <thead>
+                            <tr>
+                                <th>日期</th>
+                                <th>星期</th>
+                                <th>下班时间</th>
+                                <th>状态</th>
+                                <th>加班时长</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recordsBody">
+                            <!-- 记录将通过JavaScript动态加载 -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Toast 提示 -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="toast" class="toast" role="alert">
+            <div class="toast-header">
+                <strong class="me-auto" id="toastTitle">提示</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+            </div>
+            <div class="toast-body" id="toastMessage"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
