@@ -52,7 +52,7 @@
 
         <!-- 统计信息 -->
         <div class="row mb-4" id="statistics">
-            <div class="col-md-4">
+            <div class="col-md-3 mb-3">
                 <div class="card text-white bg-primary">
                     <div class="card-body">
                         <h5 class="card-title"><i class="fas fa-calendar-alt"></i> 本月已工作</h5>
@@ -61,7 +61,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3 mb-3">
                 <div class="card text-white bg-success">
                     <div class="card-body">
                         <h5 class="card-title"><i class="fas fa-clock"></i> 总加班时长</h5>
@@ -70,11 +70,20 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="card text-white bg-info">
+            <div class="col-md-3 mb-3">
+                <div class="card text-white bg-warning">
                     <div class="card-body">
                         <h5 class="card-title"><i class="fas fa-chart-line"></i> 平均加班</h5>
                         <p class="card-text display-4" id="averageOvertime">0</p>
+                        <small>小时/天</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="card text-white bg-info">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="fas fa-chart-line"></i> 预计本月平均加班</h5>
+                        <p class="card-text display-4" id="estimatedAverageDisplay">0</p>
                         <small>小时/天</small>
                     </div>
                 </div>
@@ -86,46 +95,54 @@
             <div class="col-md-12">
                 <div class="card border-warning">
                     <div class="card-header bg-warning text-white">
-                        <h5 class="mb-0"><i class="fas fa-bullseye"></i> 月度目标进度</h5>
+                        <h5 class="mb-0"><i class="fas fa-bullseye"></i> 月度目标进度: 1.5 小时/天</h5>
                     </div>
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-md-3 mb-3">
+                            <!-- 总工作日 -->
+                            <div class="col-md-2 mb-3">
+                                <div class="text-center">
+                                    <h6>总工作日</h6>
+                                    <p class="display-6 text-warning" id="totalWorkdays">0</p>
+                                    <small>天</small>
+                                </div>
+                            </div>
+                            
+                            <!-- 实际工作日 -->
+                            <div class="col-md-2 mb-3">
+                                <div class="text-center">
+                                    <h6>实际工作日</h6>
+                                    <p class="display-6 text-warning" id="actualWorkdays">0</p>
+                                    <small>天</small>
+                                </div>
+                            </div>
+                            
+                            <!-- 剩余工作日 -->
+                            <div class="col-md-2 mb-3">
                                 <div class="text-center">
                                     <h6>剩余工作日</h6>
                                     <p class="display-6 text-warning" id="remainingWorkdays">0</p>
                                     <small>天</small>
                                 </div>
                             </div>
-                            <div class="col-md-3 mb-3">
+                            
+                            <!-- 还需加班 -->
+                            <div class="col-md-2 mb-3">
                                 <div class="text-center">
                                     <h6>还需加班</h6>
                                     <p class="display-6 text-warning" id="additionalOvertimeNeeded">0</p>
                                     <small>小时</small>
                                 </div>
                             </div>
-                            <div class="col-md-3 mb-3">
+                            
+                            <!-- 日均需加班 -->
+                            <div class="col-md-2 mb-3">
                                 <div class="text-center">
                                     <h6>日均需加班</h6>
                                     <p class="display-6 text-warning" id="dailyAverageNeeded">0</p>
                                     <small>小时/天</small>
                                 </div>
                             </div>
-                            <div class="col-md-3 mb-3">
-                                <div class="text-center">
-                                    <h6>目标平均</h6>
-                                    <p class="display-6 text-warning" id="targetAverage">1.5</p>
-                                    <small>小时/天</small>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="progress mt-3">
-                            <div class="progress-bar bg-warning" role="progressbar" id="progressBar" style="width: 0%">
-                                <span id="progressText">0%</span>
-                            </div>
-                        </div>
-                        <div class="mt-2 text-center">
-                            <small id="progressDescription">按当前进度，需要在剩余工作日每天平均加班 <strong id="dailyNeededText">0</strong> 小时才能达到目标</small>
                         </div>
                     </div>
                 </div>

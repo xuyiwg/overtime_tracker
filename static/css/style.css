@@ -5,6 +5,11 @@ body {
 .card {
     box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
     border: 1px solid rgba(0, 0, 0, 0.125);
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-2px);
 }
 
 .card-header {
@@ -39,7 +44,11 @@ body {
 }
 
 .display-4 {
-    font-size: 2.5rem;
+    font-size: 2rem;
+}
+
+.display-6 {
+    font-size: 1.5rem;
 }
 
 .toast {
@@ -51,10 +60,104 @@ body {
     font-size: 0.75em;
 }
 
+/* 卡片间距 */
+.card:not(:last-child) {
+    margin-bottom: 1.5rem;
+}
+
+/* 统计卡片高度统一 */
+#statistics .card {
+    margin-bottom: 0;
+}
+
+#statistics .card-body {
+    padding: 1rem;
+    text-align: center;
+}
+
+/* 目标进度卡片样式优化 */
+#targetProgress .display-6 {
+    font-size: 2rem;
+    font-weight: bold;
+    margin: 0.3rem 0;
+    color: #ffc107;
+}
+
+#targetProgress .card-header {
+    font-weight: 500;
+}
+
+#targetProgress .card-body {
+    padding: 1.2rem;
+}
+
+#targetProgress .text-center p {
+    font-size: 2rem;
+    margin-bottom: 0.3rem;
+}
+
+#targetProgress .text-center h6 {
+    font-size: 1.2rem;
+    margin-bottom: 0.3rem;
+    font-weight: 600;
+}
+
+#targetProgress .text-center small {
+    font-size: 1rem;
+    margin-bottom: 0.3rem;
+}
+
+/* 预估加班卡片样式 */
+#estimatedOvertimeCard .display-6 {
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+#estimatedOvertimeCard .card-body {
+    padding: 1.5rem;
+}
+
+/* 历史统计卡片样式 */
+#historyTable .badge {
+    font-size: 0.7em;
+}
+
 /* 响应式设计 */
-@media (max-width: 768px) {
+@media (min-width: 768px) {
+    /* 目标进度卡片在大屏幕上的调整 - 确保5列平均分布 */
+    #targetProgress .col-md-2 {
+        width: 20%;
+        flex: 0 0 20%;
+        max-width: 20%;
+        margin-bottom: 1rem;
+    }
+    
+    #targetProgress .display-6 {
+        font-size: 1.6rem;
+    }
+}
+
+@media (max-width: 992px) {
     .display-4 {
         font-size: 1.8rem;
+    }
+    
+    .display-6 {
+        font-size: 1.3rem;
+    }
+    
+    #targetProgress .display-6 {
+        font-size: 1.4rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .display-4 {
+        font-size: 1.5rem;
+    }
+    
+    .display-6 {
+        font-size: 1.2rem;
     }
     
     .table-responsive {
@@ -62,12 +165,71 @@ body {
     }
     
     .card-body {
-        padding: 1rem;
+        padding: 0.75rem;
     }
     
     .btn-sm {
         padding: 0.25rem 0.5rem;
         font-size: 0.875rem;
+    }
+    
+    /* 在小屏幕上改为每行一个卡片 */
+    #statistics .col-md-3 {
+        width: 100%;
+        flex: 0 0 100%;
+        max-width: 100%;
+        margin-bottom: 1rem;
+    }
+    
+    #statistics .card {
+        margin-bottom: 1rem;
+    }
+    
+    /* 目标进度卡片在小屏幕上的调整 */
+    #targetProgress .col-md-2 {
+        width: 50%;
+        flex: 0 0 50%;
+        max-width: 50%;
+        margin-bottom: 1rem;
+    }
+    
+    #targetProgress .card-body {
+        padding: 1rem;
+    }
+    
+    #targetProgress .display-6 {
+        font-size: 1.3rem;
+    }
+    
+    /* 预估卡片在小屏幕上的调整 */
+    #estimatedOvertimeCard .display-6 {
+        font-size: 1.8rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .display-4 {
+        font-size: 1.3rem;
+    }
+    
+    .display-6 {
+        font-size: 1.1rem;
+    }
+    
+    /* 目标进度卡片在超小屏幕上的调整 */
+    #targetProgress .col-md-2 {
+        width: 100%;
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+    
+    #targetProgress .display-6 {
+        font-size: 1.5rem;
+    }
+    
+    /* 预估卡片在超小屏幕上的调整 */
+    #estimatedOvertimeCard .display-6 {
+        font-size: 1.6rem;
     }
 }
 
@@ -75,4 +237,34 @@ body {
 .table-responsive {
     min-height: 0.01%;
     overflow-x: auto;
+}
+
+/* 文本居中对齐 */
+.text-center {
+    text-align: center;
+}
+
+/* 导航栏样式 */
+.navbar-brand {
+    font-weight: 500;
+}
+
+/* 表格操作按钮间距 */
+.btn-group-sm > .btn, .btn-sm {
+    margin-right: 2px;
+}
+
+/* 卡片标题图标间距 */
+.card-header i {
+    margin-right: 0.5rem;
+}
+
+/* 响应式表格 */
+.table-responsive {
+    -webkit-overflow-scrolling: touch;
+}
+
+/* 徽章间距 */
+.badge {
+    margin: 0 2px;
 }

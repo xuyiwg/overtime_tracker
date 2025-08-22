@@ -63,9 +63,13 @@ function loadRecords() {
         .then(response => response.json())
         .then(data => {
             // 更新统计显示
+            console.log('加载当前月份数据:', data);
             document.getElementById('workDays').textContent = data.work_day_count;
             document.getElementById('totalOvertime').textContent = data.total_overtime;
             document.getElementById('averageOvertime').textContent = data.average_overtime;
+            
+            // 更新预估平均加班时长显示
+            document.getElementById('estimatedAverageDisplay').textContent = data.current_average_overtime || '0';
             
             // 更新月份显示
             const monthDisplay = `${data.year}年${data.month}月`;
@@ -80,6 +84,7 @@ function loadRecords() {
             updateTargetProgress(data);
             
             // 加载记录列表
+            console.log('加载记录列表:', data.records);
             loadRecordList(data.records);
             
             // 重新加载历史统计（因为可能有新数据）
@@ -113,36 +118,18 @@ function updateTargetProgress(data) {
         targetProgress.style.display = 'block';
         
         // 更新各个数值
+        document.getElementById('totalWorkdays').textContent = data.total_work_days || 0;
+        document.getElementById('actualWorkdays').textContent = data.actual_work_days || 0;
         document.getElementById('remainingWorkdays').textContent = data.remaining_workdays;
         document.getElementById('additionalOvertimeNeeded').textContent = data.additional_overtime_needed;
         document.getElementById('dailyAverageNeeded').textContent = data.daily_average_needed;
-        document.getElementById('targetAverage').textContent = data.target_average;
-        
-        // 更新进度条
-        const currentProgress = data.average_overtime;
-        const targetProgressPercent = Math.min(100, (currentProgress / data.target_average) * 100);
-        document.getElementById('progressBar').style.width = targetProgressPercent + '%';
-        document.getElementById('progressText').textContent = Math.round(targetProgressPercent) + '%';
-        
-        // 更新进度描述
-        document.getElementById('dailyNeededText').textContent = data.daily_average_needed;
-        
-        // 根据进度改变进度条颜色
-        const progressBar = document.getElementById('progressBar');
-        if (currentProgress >= data.target_average) {
-            progressBar.className = 'progress-bar bg-success';
-        } else if (currentProgress >= data.target_average * 0.8) {
-            progressBar.className = 'progress-bar bg-warning';
-        } else {
-            progressBar.className = 'progress-bar bg-danger';
-        }
-    } else {
-        targetProgress.style.display = 'none';
     }
 }
 
+
 // 加载记录列表
 function loadRecordList(records) {
+    console.log('加载记录列表:', records);
     const tbody = document.getElementById('recordsBody');
     tbody.innerHTML = '';
     
@@ -152,6 +139,8 @@ function loadRecordList(records) {
         tbody.appendChild(row);
         return;
     }
+
+    console.log('记录数量:', records.length);
     
     records.forEach(record => {
         const row = document.createElement('tr');
@@ -170,7 +159,7 @@ function loadRecordList(records) {
             overtimeHtml = '-';
         } else if (record.clock_out) {
             statusHtml = '<span class="badge bg-success">工作日</span>';
-            overtimeHtml = `<span class="${record.overtime_hours > 0 ? 'text-danger fw-bold' : ''}">${record.overtime_hours} 小时</span>`;
+            overtimeHtml = `<span class="${record.overtime_hours > 0 ? 'text-danger fw-bold' : ''}">${(record.overtime_hours).toFixed(2)} 小时</span>`;
         } else {
             statusHtml = '<span class="badge bg-light text-dark">未记录</span>';
             overtimeHtml = '-';

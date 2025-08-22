@@ -159,6 +159,34 @@ def get_remaining_workdays_current_month() -> int:
     
     return remaining_workdays
 
+def get_workdays_current_month() -> int:
+    """获取当前月份总的工作日数量"""
+    now = datetime.now()
+    current_year = now.year
+    current_month = now.month
+    
+    # 获取当月第一天和最后一天
+    first_day = datetime(current_year, current_month, 1)
+    if current_month == 12:
+        next_month = 1
+        next_year = current_year + 1
+    else:
+        next_month = current_month + 1
+        next_year = current_year
+    last_day = datetime(next_year, next_month, 1) - timedelta(days=1)
+
+    # 计算总的工作日
+    work_days = 0
+    date_to_check = first_day.date()
+    while date_to_check <= last_day.date():
+        is_work_day = is_workday(date_to_check)
+        if is_work_day:
+            work_days += 1
+        date_to_check += timedelta(days=1)
+    
+    return work_days
+
+
 def get_monthly_statistics(year: int, month: int) -> Dict:
     """获取指定月份的统计信息"""
     conn = sqlite3.connect(DB_NAME)
@@ -237,6 +265,10 @@ def get_statistics() -> dict:
     current_month = now.month
     
     records = get_current_month_records()
+    total_work_days = get_workdays_current_month()
+
+    leave_days = [record for record in records if record.is_leave]
+    actual_work_days = total_work_days - len(leave_days)
     
     # 过滤掉请假的记录
     work_days = [record for record in records if not record.is_leave and record.clock_out]
@@ -245,6 +277,9 @@ def get_statistics() -> dict:
     work_day_count = len(work_days)
     
     average_overtime = total_overtime / work_day_count if work_day_count > 0 else 0
+
+    # 计算按当前加班时长的本月平均时长
+    current_average_overtime = total_overtime / total_work_days
     
     # 计算剩余工作日
     remaining_workdays = get_remaining_workdays_current_month()
@@ -262,9 +297,12 @@ def get_statistics() -> dict:
         'total_overtime': round(total_overtime, 2),
         'work_day_count': work_day_count,
         'average_overtime': round(average_overtime, 2),
+        'current_average_overtime': round(current_average_overtime, 2),
         'records': records,
         'year': current_year,
         'month': current_month,
+        'total_work_days': total_work_days,
+        'actual_work_days': actual_work_days,
         'remaining_workdays': remaining_workdays,
         'additional_overtime_needed': round(additional_overtime_needed, 2),
         'daily_average_needed': round(daily_average_needed, 2),
